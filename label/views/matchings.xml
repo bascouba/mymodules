@@ -1,0 +1,85 @@
+<odoo>
+  <data>
+    <!-- ============================= -->
+    <!-- List of all registered Labels -->
+    <!-- ============================= -->
+
+    <record model="ir.ui.view" id="label.matching_list">
+      <field name="name">Matchings</field>
+      <field name="model">label.label</field>
+      <field name="arch" type="xml">
+        <tree create='false' delete='false'>
+          <field name="description"/>
+          <field name="real_id"/>
+          <field name="type"/>
+          <field name="template"/>
+          <field name="products"/>
+        </tree>
+      </field>
+    </record>
+    
+    <!-- ================== -->
+    <!-- Form for matchings -->
+    <!-- ================== -->
+    
+    <record model="ir.ui.view" id="label.matching_form">
+        <field name="name">Matchings</field>
+        <field name="model">label.label</field>
+        <field name="priority">9</field>
+        <field name="arch" type="xml">
+        <form create='false' delete='false'>
+          <group>
+            <group>
+                <field name="description"/>
+                <field name="type"/>
+                <field name="real_id" readonly="1" position="attributes">                        
+                </field>
+                <field name="products" widget="many2many" attrs="{'required':[('template','!=',False)]}">
+                    <tree>
+                        <field name="name"/>
+                    </tree>
+                </field>
+                <field name="len_products" invisible="1"/> 
+                <field name="size" invisible="1"/> 
+                <field name="template" domain="['&amp;','|',('size','like',size),('dyn','=',True),'|',('multi','=',True),'&amp;',('multi','=',False),('multi','=',len_products-1)]" attrs="{'required':['&amp;',('products','!=',[(6, False, [])]),('len_products','!=',0)]}"/>
+                <field name="png" widget="image"/>
+            </group>
+            <group>
+                <div>
+                 <field name="preview" widget="image" style="border: 3px solid black; width: inherit"/>
+             </div>
+            </group>
+          </group>
+        </form>
+        </field>
+    </record>
+    
+    
+    <record id="label.matching_action_window" model="ir.actions.act_window">
+        <field name="name">Matchings</field>
+        <field name="res_model">label.label</field>
+        <field name="view_mode">tree,form</field>
+        <field name="type">ir.actions.act_window</field>
+    </record>
+    
+    <record id="label.action_matching_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="label.matching_list" />
+        <field name="act_window_id" ref="label.matching_action_window" />
+        <field name="search_view_id" ref="label_search_view"/> 
+    </record>
+    
+    <record id="label.action_matching_form" model="ir.actions.act_window.view">
+        <field eval="2" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="label.matching_form" />
+        <field name="act_window_id" ref="label.matching_action_window" />
+    </record>
+    
+    
+    <menuitem name="Matchings" id="label.menu_1_list_matchings" parent="label.menu_1" action="label.matching_action_window"/>
+    
+    </data>
+</odoo>

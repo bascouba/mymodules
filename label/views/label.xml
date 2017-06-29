@@ -1,0 +1,258 @@
+<odoo>
+  <data>
+    <!-- ============================= -->
+    <!-- List of all registered Labels -->
+    <!-- ============================= -->
+
+
+    <record model="ir.ui.view" id="label.list">
+      <field name="name">Labels List</field>
+      <field name="model">label.label</field>
+      <field name="arch" type="xml">
+        <tree string="status" colors="red:status=='OFFLINE';green:status=='ONLINE'" default_order='status desc, real_id'>
+		  <field name="description"/>
+		  <field name="real_id" select="1"/>
+          <field name="type"/>
+          <field name="status"/>
+          <field name="task_status"/>
+        </tree>
+      </field>
+    </record>
+	
+    <!-- =============== -->
+	<!-- Form for labels -->
+    <!-- =============== -->
+	
+	<record model="ir.ui.view" id="label.form">
+		<field name="name">Labels Form</field>
+    	<field name="model">label.label</field>
+    	<field name="priority">10</field>
+		<field name="arch" type="xml">
+		<form> 
+		  <group>
+			<group>
+			    <field name="is_created" invisible="1"/>
+			    <field name="description"/>
+			    <field name="real_id" attrs="{'readonly': [('is_created', '=', True)]}"/>
+			    <field name="type"/>
+                <field name="status"/>
+			</group>
+			<group>
+			 <div>
+			     <field name="image" widget="image" style="border: 3px solid black; width: inherit"/>
+			 </div>
+			</group>
+		  </group>
+		</form>
+		</field>
+	</record>
+
+    <!-- ====================== -->
+    <!-- Kanban View for labels -->
+    <!-- ====================== -->
+    
+	<record model="ir.ui.view" id="label.labels_kanban_view">
+        <field name="name"> Label Kanban </field>
+        <field name="model">label.label</field>
+        <field name="arch" type="xml">
+            <kanban default_order='status desc, real_id'>
+                <field name="real_id"/>
+                <field name="type"/>
+                <field name="description" select="1"/>
+                <field name="status_color"/>
+                <field name="status"/>
+                <field name="task_status"/>
+                <field name="image"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.status_color.raw_value)} oe_kanban_global_click" >
+                            <group>
+                                <div class="oe_kanban_details">
+                                    <strong>
+                                        [<field name="type"/>] <field name="description"/>
+                                    </strong>
+                                    <div name="tags"/>
+                                        <field name="real_id"/>
+                                    <div name="tags"/>
+                                    <ul>
+                                        <li>Status : <field name="status"/></li>
+                                        <li>Task : <field name="task_status"/></li>
+                                    </ul>
+                                    <div name="tags"/>
+                                </div>
+                                <div class="o_kanban_image" style="border: 1px solid black; width: inherit">
+                                    <img t-att-src="kanban_image('label.label', 'image', record.id.value)"/>
+                                </div>
+                            </group>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    
+    <!-- ================= -->
+    <!-- Search for labels -->
+    <!-- ================= -->
+    
+    <record id="label_search_view" model="ir.ui.view">
+        <field name="name">label.search.view</field>
+        <field name="model">label.label</field>
+        <field name="arch" type="xml">
+            <search string="Label Information">
+                <filter string="Matchings" name="filter_matchings" domain="[('products', '=', '[]')]"/>
+                <field name="real_id"/>
+                <field name="description"/>
+            </search>
+        </field>
+    </record>
+	
+    <!-- ================= -->
+    <!-- Scheduled Updates -->
+    <!-- ================= -->
+    
+    <record id="ir_cron_scheduler_update_esl_action" model="ir.cron">
+        <field name="name">Update ESLs</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">12</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model" eval="'label.label'"/>
+        <field name="function" eval="'_update_esl'"/>
+        <field name="args">()</field>
+    </record>
+
+    <record id="ir_cron_scheduler_switch_page_esl_action_open" model="ir.cron">
+        <field name="name">Switch pages ESLs (When store opens)</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">work_days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model" eval="'label.label'"/>
+        <field name="function" eval="'_switch_page'"/>
+        <field name="args">(0,)</field>
+    </record>
+    
+    <record id="ir_cron_scheduler_switch_page_esl_action_close" model="ir.cron">
+        <field name="name">Switch pages ESLs (When store closes)</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">work_days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model" eval="'label.label'"/>
+        <field name="function" eval="'_switch_page'"/>
+        <field name="args">(1,)</field>
+    </record>
+    
+    <!-- ============================= -->
+	<!-- Configuration of the Settings -->
+    <!-- ============================= -->
+    
+	<record id="label.view_config_settings" model="ir.ui.view">
+            <field name="name">Core Appliance Configuration Settings</field>
+            <field name="model">label.config.settings</field>
+            <field name="arch" type="xml">
+                <form string="Core Appliance Configuration Settings" class="oe_form_configuration">
+                    <header>
+                        <button string="Apply" type="object" name="execute" class="oe_highlight"/>
+                        <button string="Cancel" type="object" name="cancel" class="oe_link"/>
+                    </header>
+                    <div>
+                        <group string="Network">
+                            <field name="core_appliance_ip" placeholder="192.168.10.30" required="1" class="oe_inline"/>     
+                            <field name="website" placeholder="www.yourcompany.com" class="oe_inline"/>                      
+                        </group>
+                        <group string="Data">
+                            <field name="pos" class="oe_inline"/>
+                            <field name="template_gestion" domain="[('dyn','=',True)]" class="oe_inline"/>
+                        </group>
+                    </div>
+                </form>
+            </field>
+    </record>
+	
+     <record id="label.configuration_action_window" model="ir.actions.act_window">
+        <field name="name">Core Appliance Configuration Settings</field>
+        <field name="res_model">label.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+    </record>
+
+    <!-- =============================== -->
+    <!-- actions opening views on models -->
+    <!-- =============================== -->
+    
+        
+    <record model="ir.actions.server" id="myaction">
+        <field name="type">ir.actions.server</field>
+        <field name="name">Create/Modify Matching</field>
+        <field name="state">code</field>
+        <field name="model_id" ref="model_label_label"></field>
+        <field name="code">action = object.form_to_matching()</field>
+    </record>
+    
+    <record model="ir.values" id="label.to_matching_form">
+        <field name="name">Modify Matching</field>
+        <field name="key2">client_action_multi</field>
+        <field name="type">object</field>
+        <field name="value" eval="'ir.actions.server,' + str(ref('myaction'))" />
+        <field name="key">action</field>
+        <field name="model">label.label</field>
+    </record>
+    
+    <!-- Labels Menu -->
+    
+    <record model="ir.actions.act_window" id="label.action_window">
+        <field name="name">Labels</field>
+        <field name="res_model">label.label</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="type">ir.actions.act_window</field>
+    </record>
+
+    <record id="action_label_tree" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="label.list" />
+        <field name="act_window_id" ref="label.action_window" />
+    </record>
+
+    <record id="action_label_form" model="ir.actions.act_window.view">
+        <field eval="0" name="sequence"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="label.labels_kanban_view" />
+        <field name="act_window_id" ref="label.action_window" />
+    </record>
+    
+    <record id="action_label_kanban" model="ir.actions.act_window.view">
+        <field eval="2" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="label.form" />
+        <field name="act_window_id" ref="label.action_window" />
+    </record>
+    <!-- ============= -->
+    <!-- Top menu item -->
+    <!-- ============= -->
+
+    <menuitem name="Labels" id="label.menu_root"/>
+
+    <!-- =============== -->
+    <!-- menu categories -->
+    <!-- =============== -->
+
+    <menuitem name="Dashboard" id="label.menu_1" parent="label.menu_root"/>
+    <menuitem name="Administration" id="label.menu_2" parent="label.menu_root" groups="base.group_no_one"/>
+
+    <!-- ======= -->
+    <!-- actions -->
+    <!-- ======= -->
+
+    <menuitem name="Labels" id="label.menu_1_list_" parent="label.menu_1" action="label.action_window"/>
+    <!-- <menuitem name="Templates" id="label.menu_1_template_list" parent="label.menu_1" action="label.template_action_window"/>
+    <menuitem name="Associations" id="label.menu_1_matching_list" parent="label.menu_1" action="label.matching_action_window"/> -->
+    <menuitem name="Configuration" id="label" parent="label.menu_2" action="label.configuration_action_window" groups="base.group_no_one"/>
+
+  </data>
+</odoo>

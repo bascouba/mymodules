@@ -1,0 +1,103 @@
+<odoo>
+    <data>
+    
+    <!-- ================================ -->
+    <!-- List of all registered Templates -->
+    <!-- ================================ -->
+    
+    <record model="ir.ui.view" id="label.template_list">
+      <field name="name">Template List</field>
+      <field name="model">label.template</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree create="true" edit="true">
+          <field name="description"/>
+          <field name="name"/>
+          <field name="type"/>
+          <field name="multi"/>
+        </tree>
+      </field>
+    </record>
+
+        
+    <!-- ================================ -->
+    <!-- Form of all registered Templates -->
+    <!-- ================================ -->
+    
+    <record model="ir.ui.view" id="label.template_form">
+        <field name="name">Template Form</field>
+        <field name="model">label.template</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+        <form create="true" edit="true">
+          <group>
+            <group>
+              <field name="description"/>
+              <field name="name"/>
+              <field name="type"/>
+              <field name="multi"/>
+            </group>
+            <group>
+              <div>
+                 <field name="preview" widget="image" style="border: 3px solid black; width: inherit"/>
+             </div>
+            </group>
+          </group>
+        </form>
+        </field>
+    </record>
+        
+    <!-- ================================== -->
+    <!-- Kanban of all registered Templates -->
+    <!-- ================================== -->
+    
+    <record model="ir.ui.view" id="label.template_kanban_view">
+        <field name="name"> Template Kanban </field>
+        <field name="model">label.template</field>
+        <field name="arch" type="xml">
+            <kanban >
+                <field name="type"/>
+                <field name="name" select="1"/>
+                <field name="multi"/>
+                <field name="preview"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click" >
+                                <div class="oe_kanban_details" style="white-space: nowrap; text-overflow: ellipsis">
+                                    <strong>
+                                        [<field name="type"/>]<br/> <field name="description"/>
+                                    </strong>
+                                    <div name="tags"/>
+                                        <xpath expr="//div[@class='oe_kanban_partner_links']" position="after">
+                                            <li t-if="record.multi.raw_value">Multi Products</li>
+                                            <li t-if="!record.multi.raw_value">Mono Product</li>
+                                        </xpath>
+                                    <div name="tags"/>
+                                    <field name="name"/>
+                                </div>
+                                <div class="o_kanban_image" style="border: 1px solid black; width: inherit">
+                                    <img t-att-src="kanban_image('label.template', 'preview', record.id.value)"/>
+                                </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    
+    <record model="ir.actions.act_window" id="label.template_action_window">
+      <field name="name">Templates</field>
+      <field name="res_model">label.template</field>
+      <field name="view_mode">kanban,tree,form</field>
+      <field name="view_id" ref="label.template_kanban_view"/>
+    </record>
+    
+    
+
+    
+    
+    <menuitem name="Templates" id="label.menu_1_template_list" parent="label.menu_1" action="label.template_action_window"/>
+    
+    
+    </data>
+</odoo>
