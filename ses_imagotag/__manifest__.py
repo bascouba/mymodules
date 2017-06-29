@@ -30,5 +30,6 @@
         'views/templates.xml',
         'views/matchings.xml',
         'views/product.xml',
+        'data/initial_template.xml',
     ],
 }

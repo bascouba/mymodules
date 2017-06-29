@@ -4,9 +4,9 @@
     <!-- List of all registered Labels -->
     <!-- ============================= -->
 
-    <record model="ir.ui.view" id="label.matching_list">
+    <record model="ir.ui.view" id="ses_imagotag.label_matching_list">
       <field name="name">Matchings</field>
-      <field name="model">label.label</field>
+      <field name="model">ses_imagotag.label</field>
       <field name="arch" type="xml">
         <tree create='false' delete='false'>
           <field name="description"/>
@@ -22,9 +22,9 @@
     <!-- Form for matchings -->
     <!-- ================== -->
     
-    <record model="ir.ui.view" id="label.matching_form">
+    <record model="ir.ui.view" id="ses_imagotag.label_matching_form">
         <field name="name">Matchings</field>
-        <field name="model">label.label</field>
+        <field name="model">ses_imagotag.label</field>
         <field name="priority">9</field>
         <field name="arch" type="xml">
         <form create='false' delete='false'>
@@ -55,31 +55,31 @@
     </record>
     
     
-    <record id="label.matching_action_window" model="ir.actions.act_window">
+    <record id="ses_imagotag.label_matching_action_window" model="ir.actions.act_window">
         <field name="name">Matchings</field>
-        <field name="res_model">label.label</field>
+        <field name="res_model">ses_imagotag.label</field>
         <field name="view_mode">tree,form</field>
         <field name="type">ir.actions.act_window</field>
     </record>
     
-    <record id="label.action_matching_tree" model="ir.actions.act_window.view">
+    <record id="ses_imagotag.label_action_matching_tree" model="ir.actions.act_window.view">
         <field eval="1" name="sequence"/>
         <field name="view_type">form</field>
         <field name="view_mode">tree</field>
-        <field name="view_id" ref="label.matching_list" />
-        <field name="act_window_id" ref="label.matching_action_window" />
+        <field name="view_id" ref="ses_imagotag.label_matching_list" />
+        <field name="act_window_id" ref="ses_imagotag.label_matching_action_window" />
         <field name="search_view_id" ref="label_search_view"/> 
     </record>
     
-    <record id="label.action_matching_form" model="ir.actions.act_window.view">
+    <record id="ses_imagotag.label_action_matching_form" model="ir.actions.act_window.view">
         <field eval="2" name="sequence"/>
         <field name="view_mode">form</field>
-        <field name="view_id" ref="label.matching_form" />
-        <field name="act_window_id" ref="label.matching_action_window" />
+        <field name="view_id" ref="ses_imagotag.label_matching_form" />
+        <field name="act_window_id" ref="ses_imagotag.label_matching_action_window" />
     </record>
     
     
-    <menuitem name="Matchings" id="label.menu_1_list_matchings" parent="label.menu_1" action="label.matching_action_window"/>
+    <menuitem name="Matchings" id="ses_imagotag.menu_1_list_matchings" parent="ses_imagotag.menu_1" action="ses_imagotag.label_matching_action_window"/>
     
     </data>
 </odoo>

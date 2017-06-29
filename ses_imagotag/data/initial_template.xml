@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="ses_imagotag.template_before_configuration" model="ses_imagotag.template">
+        <field name="name">Delete me when configuration works</field>
+        <field name="description">Delete me when configuration works</field>
+        <field name="dyn">t</field>
+        <field name="multi">t</field>
+    </record>
+</odoo>

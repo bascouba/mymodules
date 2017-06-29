@@ -5,9 +5,9 @@
     <!-- List of all registered Templates -->
     <!-- ================================ -->
     
-    <record model="ir.ui.view" id="label.template_list">
+    <record model="ir.ui.view" id="ses_imagotag.template_list">
       <field name="name">Template List</field>
-      <field name="model">label.template</field>
+      <field name="model">ses_imagotag.template</field>
       <field name="type">tree</field>
       <field name="arch" type="xml">
         <tree create="true" edit="true">
@@ -24,9 +24,9 @@
     <!-- Form of all registered Templates -->
     <!-- ================================ -->
     
-    <record model="ir.ui.view" id="label.template_form">
+    <record model="ir.ui.view" id="ses_imagotag.template_form">
         <field name="name">Template Form</field>
-        <field name="model">label.template</field>
+        <field name="model">ses_imagotag.template</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
         <form create="true" edit="true">
@@ -51,9 +51,9 @@
     <!-- Kanban of all registered Templates -->
     <!-- ================================== -->
     
-    <record model="ir.ui.view" id="label.template_kanban_view">
+    <record model="ir.ui.view" id="ses_imagotag.template_kanban_view">
         <field name="name"> Template Kanban </field>
-        <field name="model">label.template</field>
+        <field name="model">ses_imagotag.template</field>
         <field name="arch" type="xml">
             <kanban >
                 <field name="type"/>
@@ -76,7 +76,7 @@
                                     <field name="name"/>
                                 </div>
                                 <div class="o_kanban_image" style="border: 1px solid black; width: inherit">
-                                    <img t-att-src="kanban_image('label.template', 'preview', record.id.value)"/>
+                                    <img t-att-src="kanban_image('ses_imagotag.template', 'preview', record.id.value)"/>
                                 </div>
                         </div>
                     </t>
@@ -85,18 +85,18 @@
         </field>
     </record>
     
-    <record model="ir.actions.act_window" id="label.template_action_window">
+    <record model="ir.actions.act_window" id="ses_imagotag.template_action_window">
       <field name="name">Templates</field>
-      <field name="res_model">label.template</field>
+      <field name="res_model">ses_imagotag.template</field>
       <field name="view_mode">kanban,tree,form</field>
-      <field name="view_id" ref="label.template_kanban_view"/>
+      <field name="view_id" ref="ses_imagotag.template_kanban_view"/>
     </record>
     
     
 
     
     
-    <menuitem name="Templates" id="label.menu_1_template_list" parent="label.menu_1" action="label.template_action_window"/>
+    <menuitem name="Templates" id="ses_imagotag.menu_1_template_list" parent="ses_imagotag.menu_1" action="ses_imagotag.template_action_window"/>
     
     
     </data>

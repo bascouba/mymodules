@@ -10,7 +10,7 @@ class Product(models.Model):
     _name='product.product'
     _inherit = 'product.product'
     
-    matching=fields.Many2many(comodel_name='label.label')
+    matching=fields.Many2many(comodel_name='ses_imagotag.label')
     label_price=fields.Char(compute='get_pos_price', store=True)
     label_discount_percent=fields.Float(digits=(16,2), compute='get_pos_price')
     label_discount_fixed=fields.Float(digits=(16,2), compute='get_pos_price')
@@ -39,7 +39,7 @@ class Product(models.Model):
     _name='product.template'
     _inherit='product.template'
     
-    matching=fields.Many2many(comodel_name='label.label', compute="get_matching")
+    matching=fields.Many2many(comodel_name='ses_imagotag.label', compute="get_matching")
     len_matching_template=fields.Integer(compute="get_len_matching_template")
     
     @api.multi

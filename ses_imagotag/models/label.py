@@ -16,7 +16,7 @@ import re
 
 
 class Label(models.Model):
-	_name='label.label'
+	_name='ses_imagotag.label'
 	
 	_logger = logging.getLogger(__name__)
 	
@@ -45,7 +45,7 @@ class Label(models.Model):
 	task_status=fields.Char(compute="_get_status_task", string="Task Status")
 	products=fields.Many2many(comodel_name='product.product', string="Article", help="The products you want to link to be displayed on the label")
 	len_products=fields.Integer(compute='_get_len_products', store=True)
-	template=fields.Many2one(comodel_name='label.template', help="The template that defines the way informations of the products will be displayed")
+	template=fields.Many2one(comodel_name='ses_imagotag.template', help="The template that defines the way informations of the products will be displayed")
 	preview=fields.Binary(compute="_get_preview", string="Preview", help="Preview of the products with the actual template")
 	
 	
@@ -170,8 +170,8 @@ class Label(models.Model):
 	def _build_task_body(self):
 		xmlbody=""
 		xmlbody+="<TaskOrder title='Update ESLs from Odoo'>"
-		if self.env['label.template'].browse(int(re.search(r'\d+', self.env['ir.config_parameter'].get_param('template_gestion')).group())):
-			xmlbody+=self._xml_content(self.products,self.env['label.template'].browse(int(re.search(r'\d+', self.env['ir.config_parameter'].get_param('template_gestion')).group())),1)
+		if self.env['ses_imagotag.template'].browse(int(re.search(r'\d+', self.env['ir.config_parameter'].get_param('template_gestion')).group())):
+			xmlbody+=self._xml_content(self.products,self.env['ses_imagotag.template'].browse(int(re.search(r'\d+', self.env['ir.config_parameter'].get_param('template_gestion')).group())),1)
 		xmlbody+=self._xml_content(self.products,self.template,0)
 		xmlbody+="</TaskOrder>"
 		return xmlbody
@@ -188,7 +188,7 @@ class Label(models.Model):
 		for product in products:
 			xmlbody+="<article>"
 			xmlbody+="""<field key='name' value=" """+product.name+""" "/>"""
-			xmlbody+="<field key='price' value='"+str(product.label_price)+"'/>"
+			xmlbody+="<field key='price' value='"+str(product.label_price or product.list_price)+"'/>"
 			if product.label_discount_percent!=0:
 				xmlbody+="<field key='base_price' value='"+str('%.2f' % float(product.list_price))+"'/>"
 				xmlbody+="<field key='discount percent' value='"+str(product.label_discount_percent)+"'/>"
@@ -206,7 +206,7 @@ class Label(models.Model):
 				for attribute in product.attribute_value_ids:
 					xmlbody+=attribute.name+" "
 				xmlbody+=""" "/>"""
-			if product.product_tmpl_id.website_url and self.env['ir.config_parameter'].get_param('website'):
+			if hasattr(product.product_tmpl_id, 'website_url') and self.env['ir.config_parameter'].get_param('website'):
 				xmlbody+="<field key='url' value='"+self.env['ir.config_parameter'].get_param('website')+product.product_tmpl_id.website_url+"'/>"
 			xmlbody+="</article>"
 		if template.multi:
@@ -272,7 +272,7 @@ class Label(models.Model):
 					record.template.set_preview(record.preview)
 			return {
 			        'type': 'ir.actions.act_window',
-			        'res_model': 'label.label',
+			        'res_model': 'ses_imagotag.label',
 			        'view_mode': 'tree,form',
 			        'view_type': 'form',
 			        'context':self._context.copy()
@@ -290,10 +290,10 @@ class Label(models.Model):
 	# ============================
 	
 	def form_to_matching(self):
-		view_id = self.env['ir.model.data'].get_object('label','matching_form')
+		view_id = self.env['ir.model.data'].get_object('ses_imagotag','label_matching_form')
 		return {
 	        'type': 'ir.actions.act_window',
-	        'res_model': 'label.label',
+	        'res_model': 'ses_imagotag.label',
 	        'view_id': view_id.id,
  	        'res_id': self.id,
  	      	'view_mode': 'form',
@@ -306,17 +306,17 @@ class Label(models.Model):
 		context=self._context.copy()
 
 		if context.get('active_ids') and len(context.get('active_ids'))!=1:
- 			self.template=self.env['label.template'].search(['&','|',('size','like',self.size),('dyn','=',True),('multi','=',True)])[0]
+ 			self.template=self.env['ses_imagotag.template'].search(['&','|',('size','like',self.size),('dyn','=',True),('multi','=',True)])[0]
 			self.products=[(6,0,context.get('active_ids'))] 
 		else:
 			self.products=[(6,0,[context.get('active_id')])] 
- 			self.template=self.env['label.template'].search(['&','|',('size','like',self.size),('dyn','=',True),('multi','=',False)])[0]
+ 			self.template=self.env['ses_imagotag.template'].search(['&','|',('size','like',self.size),('dyn','=',True),('multi','=',False)])[0]
 		
 		return {
             'name':_("Save a new matching"),
             'view_mode': 'form',
 			'view_type': 'form',
-            'res_model': 'label.label',
+            'res_model': 'ses_imagotag.label',
             'res_id': self.id,
             'type': 'ir.actions.act_window',
             'target': 'current',
@@ -332,17 +332,17 @@ class Label(models.Model):
 			product_ids=[]
 			for product_template in context.get('active_ids'):
 				product_ids+=[self.env['product.template'].browse(product_template).product_variant_id.id]
- 			self.template=self.env['label.template'].search(['&','|',('size','like',self.size),('dyn','=',True),('multi','=',True)])[0]
+ 			self.template=self.env['ses_imagotag.template'].search(['&','|',('size','like',self.size),('dyn','=',True),('multi','=',True)])[0]
 			self.products=[(6,0,product_ids)] 
 		else:
 			self.products=[(6,0,[self.env['product.template'].browse(context.get('active_id')).product_variant_id.id])] 
- 			self.template=self.env['label.template'].search(['&','|',('size','like',self.size),('dyn','=',True),('multi','=',False)])[0]
+ 			self.template=self.env['ses_imagotag.template'].search(['&','|',('size','like',self.size),('dyn','=',True),('multi','=',False)])[0]
 		
 		return {
             'name':_("Save a new matching"),
             'view_mode': 'form',
 			'view_type': 'form',
-            'res_model': 'label.label',
+            'res_model': 'ses_imagotag.label',
             'res_id': self.id,
             'type': 'ir.actions.act_window',
             'target': 'current',

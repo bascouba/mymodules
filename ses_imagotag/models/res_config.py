@@ -11,15 +11,15 @@ _logger = logging.getLogger(__name__)
 
 class LabelConfigSettings(models.TransientModel):
 
-	_name = 'label.config.settings'
+	_name = 'ses_imagotag.config.settings'
 	_inherit = 'res.config.settings'
 	
-	core_appliance_ip = fields.Char('Core Appliance IP', default="localhost", required=True, help="IP Address of the imagotag server. !! This parameter has to be set before registering labels on Odoo !!")
+	core_appliance_ip = fields.Char('Core Appliance IP', required=True, help="IP Address of the imagotag server. !! This parameter has to be set before registering labels on Odoo !!")
 	website=fields.Char('Website Domain', help="Website domain where the products are sold")
 	
 	pos=fields.Many2one(comodel_name='pos.config', string="Point of Sale", delegate=True)
-	template_gestion=fields.Many2one(comodel_name='label.template', string='Template Inventory', delegate=True)
-# 	store_open=fields.Boolean(help="Used to check if store is open or close to choose template", default=True)
+	template_gestion=fields.Many2one(comodel_name='ses_imagotag.template', string='Template Inventory', default=False, delegate=True)
+
 	
 
 	def get_default_core_appliance_ip(self, fields):

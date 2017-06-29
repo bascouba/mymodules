@@ -5,7 +5,7 @@
     <!-- Form of all registered Products -->
     <!-- =============================== -->
     
-    <record id="label.product_template_form_view_link_to_label_button" model="ir.ui.view">
+    <record id="ses_imagotag.product_template_form_view_link_to_label_button" model="ir.ui.view">
         <field name="name">product.template.link.to.label.button</field>
         <field name="model">product.template</field>
         <field name="mode">primary</field>
@@ -23,10 +23,10 @@
     
     <record id="action_product_label_list" model="ir.actions.act_window">
         <field name="name">Labels Lines</field>
-        <field name="res_model">label.label</field>
+        <field name="res_model">ses_imagotag.label</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="label.matching_list"></field>
+        <field name="view_id" ref="ses_imagotag.label_matching_list"></field>
         <field name="target">new</field>
         <field name="domain">[('products','in', active_id)]</field>
     </record>
@@ -62,7 +62,7 @@
 
     
     
-     <record id="product_product_action" model="ir.actions.act_window">
+     <record id="ses_imagotag.product_action" model="ir.actions.act_window">
         <field name="name">Products</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">product.product</field>
@@ -75,9 +75,9 @@
     <!-- ================================ -->
     
     
-    <record model="ir.ui.view" id="label.tree_new_match">
+    <record model="ir.ui.view" id="ses_imagotag.label_tree_new_match">
       <field name="name">Create Matching</field>
-      <field name="model">label.label</field>
+      <field name="model">ses_imagotag.label</field>
       <field name="view_type">form</field>
       <field name="view_mode">tree</field>
       <field name="arch" type="xml">
@@ -95,10 +95,10 @@
     
     <record id="action_create_matching_tree" model="ir.actions.act_window">
         <field name="name">Create Matching</field>
-        <field name="res_model">label.label</field>
+        <field name="res_model">ses_imagotag.label</field>
         <field eval="0" name="sequence"/>
         <field name="view_mode">tree</field>
-        <field name="view_id" ref="label.tree_new_match" />
+        <field name="view_id" ref="ses_imagotag.label_tree_new_match" />
     </record>
     
     <record model="ir.values" id="product.product_link_to_label">
@@ -113,9 +113,9 @@
     
     <!-- Product.template -->
 
-    <record model="ir.ui.view" id="label.tree_new_match_template">
+    <record model="ir.ui.view" id="ses_imagotag.label_tree_new_match_template">
       <field name="name">Create Matching</field>
-      <field name="model">label.label</field>
+      <field name="model">ses_imagotag.label</field>
       <field name="view_type">form</field>
       <field name="view_mode">tree</field>
       <field name="arch" type="xml">
@@ -133,10 +133,10 @@
     
     <record id="action_create_matching_tree_template" model="ir.actions.act_window">
         <field name="name">Create Matching</field>
-        <field name="res_model">label.label</field>
+        <field name="res_model">ses_imagotag.label</field>
         <field eval="0" name="sequence"/>
         <field name="view_mode">tree</field>
-        <field name="view_id" ref="label.tree_new_match_template" />
+        <field name="view_id" ref="ses_imagotag.label_tree_new_match_template" />
     </record>
     
     <record model="ir.values" id="product.template_link_to_label">
@@ -148,7 +148,7 @@
         <field name="model">product.template</field>
     </record>
         
-    <menuitem name="Products" id="label.menu_1_list_articles" parent="label.menu_1" action="product_product_action"/>
+    <menuitem name="Products" id="ses_imagotag.menu_1_list_articles" parent="ses_imagotag.menu_1" action="ses_imagotag.product_action"/>
     
     
     </data>
