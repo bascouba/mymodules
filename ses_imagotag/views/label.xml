@@ -111,11 +111,23 @@
     <!-- Scheduled Updates -->
     <!-- ================= -->
     
-    <record id="ir_cron_scheduler_update_esl_action" model="ir.cron">
-        <field name="name">Update ESLs</field>
+    <record id="ir_cron_scheduler_update_esl_action_open" model="ir.cron">
+        <field name="name">Update ESLs (When store opens)</field>
         <field name="user_id" ref="base.user_root"/>
-        <field name="interval_number">12</field>
-        <field name="interval_type">hours</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">work_days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model" eval="'ses_imagotag.label'"/>
+        <field name="function" eval="'_update_esl'"/>
+        <field name="args">()</field>
+    </record>
+    
+    <record id="ir_cron_scheduler_update_esl_action_closes" model="ir.cron">
+        <field name="name">Update ESLs (When store closes)</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">work_days</field>
         <field name="numbercall">-1</field>
         <field name="doall" eval="False"/>
         <field name="model" eval="'ses_imagotag.label'"/>
