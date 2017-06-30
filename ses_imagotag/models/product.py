@@ -22,13 +22,14 @@ class Product(models.Model):
     def get_pos_price(self):
         pos_config=self.env['pos.config']
         #TODO: Improve the following getter of the pos's pricelist
-        pos=pos_config.browse(int(re.search(r'\d+', self.env['ir.config_parameter'].get_param('pos')).group()))
-        for element in pos :
-            for pricelist in element.pricelist_id:
-                self.label_price=pricelist.get_product_price_rule(self,1,False)[0]
-                self.label_discount_percent=self.env['product.pricelist.item'].browse(pricelist.get_product_price_rule(self,1,False)[1]).percent_price
-                if self.env['product.pricelist.item'].browse(pricelist.get_product_price_rule(self,1,False)[1]).fixed_price!=0:
-                    self.label_discount_fixed=(self.list_price - self.env['product.pricelist.item'].browse(pricelist.get_product_price_rule(self,1,False)[1]).fixed_price)
+        if self.env['ir.config_parameter'].get_param('pos'):
+            pos=pos_config.browse(int(re.search(r'\d+', self.env['ir.config_parameter'].get_param('pos')).group()))
+            for element in pos :
+                for pricelist in element.pricelist_id:
+                    self.label_price=pricelist.get_product_price_rule(self,1,False)[0]
+                    self.label_discount_percent=self.env['product.pricelist.item'].browse(pricelist.get_product_price_rule(self,1,False)[1]).percent_price
+                    if self.env['product.pricelist.item'].browse(pricelist.get_product_price_rule(self,1,False)[1]).fixed_price!=0:
+                        self.label_discount_fixed=(self.list_price - self.env['product.pricelist.item'].browse(pricelist.get_product_price_rule(self,1,False)[1]).fixed_price)
 
     @api.one
     def get_len_matching(self):
