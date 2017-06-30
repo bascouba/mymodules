@@ -9,7 +9,7 @@
         Manage your labels. Link your products to labels that will display informations about the products
     """,
 
-    'images': [],
+    'images': ['images/main_screenshot.png'],
     'author': "Bastien BASCOU, SES-imagotag",
     'installable': True,
     'application': True,
