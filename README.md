@@ -30,6 +30,7 @@ You have to go in Settings/Technical/Automation/ScheduledAction tab, There are 4
 - Switch pages ESLs (When store closes) that make the labels change to the 'staff' template linked in the configuration menu.
 
 To configure all these Scheduled Actions, you just need to set the time of the day store closes and opens on switch pages
+
 To get latest information on ESLs, set the time of 'Update ESLs' 5-10 minutes before the switch page.
 
 
