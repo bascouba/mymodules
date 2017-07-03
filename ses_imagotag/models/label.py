@@ -187,7 +187,7 @@ class Label(models.Model):
 			xmlbody+="""<field key='png' value=" """+self.png+""" "/>"""
 		for product in products:
 			xmlbody+="<article>"
-			xmlbody+="""<field key='name' value=" """+product.name+""" "/>"""
+			xmlbody+="""<field key='name' value='"""+product.name+"""'/>"""
 			xmlbody+="<field key='price' value='"+str(product.label_price or product.list_price)+"'/>"
 			if product.label_discount_percent!=0:
 				xmlbody+="<field key='base_price' value='"+str('%.2f' % float(product.list_price))+"'/>"
