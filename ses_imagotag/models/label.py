@@ -183,18 +183,20 @@ class Label(models.Model):
 		xmlbody+=" labelId='"+self.real_id+"' taskPriority='NORMAL' externalId='8069'>"
 		if template.multi:
 			xmlbody+="<articles>"
-		if self.png:
+		if self.png and template.multi:
 			xmlbody+="""<field key='png' value=" """+self.png+""" "/>"""
 		for product in products:
 			xmlbody+="<article>"
+			if self.png and template.multi==False:
+				xmlbody+="""<field key='png' value=" """+self.png+""" "/>"""
 			xmlbody+="""<field key='name' value='"""+product.name+"""'/>"""
-			xmlbody+="<field key='price' value='"+str(product.label_price or product.list_price)+"'/>"
+			xmlbody+="<field key='price' value='"+str('%.2f' % float(product.label_price) or '%.2f' % float(product.list_price))+"'/>"
 			if product.label_discount_percent!=0:
 				xmlbody+="<field key='base_price' value='"+str('%.2f' % float(product.list_price))+"'/>"
-				xmlbody+="<field key='discount percent' value='"+str(product.label_discount_percent)+"'/>"
+				xmlbody+="<field key='discount_percent' value='"+str(product.label_discount_percent)+"'/>"
 			if product.label_discount_fixed!=0:
 				xmlbody+="<field key='base_price' value='"+str('%.2f' % float(product.list_price))+"'/>"
-				xmlbody+="<field key='discount fixed' value='"+str(product.label_discount_fixed)+"'/>"
+				xmlbody+="<field key='discount_fixed' value='"+str(product.label_discount_fixed)+"'/>"
 			xmlbody+="<field key='image' value='"+(product.image or "")+"'/>"
 			xmlbody+="""<field key='stock' value=" """+str(product.qty_available)+""" "/>"""
 			if product.description:

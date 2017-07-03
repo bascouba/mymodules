@@ -57,7 +57,7 @@ class Product(models.Model):
     @api.multi
     def action_view_matchings(self):
         self.ensure_one()
-        action = self.env.ref('label.action_product_label_list')
+        action = self.env.ref('ses_imagotag.action_product_label_list')
 
         return {
             'name': action.name,
