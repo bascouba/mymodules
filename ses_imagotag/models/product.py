@@ -17,7 +17,7 @@ class Product(models.Model):
     len_matching=fields.Integer(compute="get_len_matching")
 
     #This trigger doesn't work properly, it triggers for every 
-    @api.depends('pricelist_item_ids.price','pricelist_item_ids.percent_price', 'pricelist_item_ids.fixed_price')
+    @api.depends('pricelist_item_ids.price','pricelist_item_ids.percent_price', 'pricelist_item_ids.fixed_price','list_price')
     @api.one
     def get_pos_price(self):
         pos_config=self.env['pos.config']

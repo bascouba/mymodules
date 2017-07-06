@@ -27,7 +27,7 @@
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="ses_imagotag.label_matching_list"></field>
-        <field name="target">new</field>
+        <field name="target">current</field>
         <field name="domain">[('products','in', active_id)]</field>
     </record>
         

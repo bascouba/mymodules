@@ -41,7 +41,7 @@ class Label(models.Model):
 	
 	# Matching Attributes 
 	png=fields.Binary(string="Additional image",help="Add a .png that will be displayed on the label (depends on the template). The label can only display red, white and black pixels : if you want a good rendering of your image, you may have to rework it (with dithering and resizing to fit the template)", required=False)
-	task_id=fields.Char()
+	task_id=fields.Char(compute="_update_now", store="True")
 	task_status=fields.Char(compute="_get_status_task", string="Task Status")
 	products=fields.Many2many(comodel_name='product.product', string="Article", help="The products you want to link to be displayed on the label")
 	len_products=fields.Integer(compute='_get_len_products', store=True)
@@ -113,7 +113,7 @@ class Label(models.Model):
 			elif record.status == 'OFFLINE' or record.task_status=='FAILED':
 				record.status_color = 2				
 	
-	@api.depends('task_id')
+	@api.onchange('task_id')
 	@api.multi
 	def _get_last_image_loaded(self):
 		for label in self:
@@ -124,7 +124,8 @@ class Label(models.Model):
 				if labelupdatestatus:
  					root=XML(labelupdatestatus.text)
  				 	for update in root.iter('UpdateStatus'):
- 					 	task_id=update.get('id')	
+ 				 		if update.find('Page').text=="0":
+ 					 	 	task_id=update.get('id')
  		 	 	label.image=label._get_image_from_task(task_id)
  		 	else:
  		 		label.image=False
@@ -155,30 +156,40 @@ class Label(models.Model):
 		)
 	def _need_update(self):
 		self.need_update=True
-
+		
+	@api.one
+	@api.depends('products','template')
+	def _update_now(self):
+		self._update_esl(0)
+		
 	@api.multi
-	def _update_esl(self):
+	def _update_esls(self, preload):
 		for label in self.search([]):
-			if label.len_products!=0 and label.need_update==True:
-				response=requests.post('http://'+self.env['ir.config_parameter'].get_param('core_appliance_ip')+':8001/service/task', data=label._build_task_body().encode('utf-8'), headers={'Content-Type':'application/xml'})
-				root=XML(response.text)
-				for transaction in root.iter('Transaction'):
-					label.task_id=transaction.get('id')
-				label.need_update=False
+			if label.need_update==True:
+				label._update_esl(preload)
+
+	@api.one
+	def _update_esl(self, preload):
+		if self.len_products!=0:
+			response=requests.post('http://'+self.env['ir.config_parameter'].get_param('core_appliance_ip')+':8001/service/task', data=self._build_task_body(preload).encode('utf-8'), headers={'Content-Type':'application/xml'})
+			root=XML(response.text)
+			for transaction in root.iter('Transaction'):
+				self.task_id=transaction.get('id')
+			self.need_update=False
 				
 	@api.model
-	def _build_task_body(self):
+	def _build_task_body(self, preload):
 		xmlbody=""
 		xmlbody+="<TaskOrder title='Update ESLs from Odoo'>"
-		if self.env['ses_imagotag.template'].browse(int(re.search(r'\d+', self.env['ir.config_parameter'].get_param('template_gestion')).group())):
-			xmlbody+=self._xml_content(self.products,self.env['ses_imagotag.template'].browse(int(re.search(r'\d+', self.env['ir.config_parameter'].get_param('template_gestion')).group())),1)
-		xmlbody+=self._xml_content(self.products,self.template,0)
+		if (self.env['ses_imagotag.template'].browse(int(re.search(r'\d+', self.env['ir.config_parameter'].get_param('template_gestion')).group()))):
+			xmlbody+=self._xml_content(self.products,self.env['ses_imagotag.template'].browse(int(re.search(r'\d+', self.env['ir.config_parameter'].get_param('template_gestion')).group())),1,1)
+		xmlbody+=self._xml_content(self.products,self.template,0,preload)
 		xmlbody+="</TaskOrder>"
 		return xmlbody
 			
 	@api.model
-	def _xml_content(self,products,template,page):
-		xmlbody="<TemplateTask page='"+str(page)+"' preload='true' template='"
+	def _xml_content(self,products,template,page,preload):
+		xmlbody="<TemplateTask page='"+str(page)+"' preload='"+str(preload)+"' template='"
 		xmlbody+=template.name+"'"
 		xmlbody+=" labelId='"+self.real_id+"' taskPriority='NORMAL' externalId='8069'>"
 		if template.multi:
@@ -220,7 +231,7 @@ class Label(models.Model):
  	@api.depends('products','template','png')
 	def _get_preview(self):
 		if self.products and self.template:
-	 		response=requests.post('http://'+self.env['ir.config_parameter'].get_param('core_appliance_ip')+':8001/service/task/preview/image', data=self._xml_content(self.products,self.template,0).encode('utf-8'), headers={'Content-Type':'application/xml'})
+	 		response=requests.post('http://'+self.env['ir.config_parameter'].get_param('core_appliance_ip')+':8001/service/task/preview/image', data=self._xml_content(self.products,self.template,0,1).encode('utf-8'), headers={'Content-Type':'application/xml'})
 	 		if response:
 	 			self.preview=base64.b64encode(response.content)
 			else:
@@ -291,6 +302,16 @@ class Label(models.Model):
 	# Views Transition and Actions
 	# ============================
 	
+	
+	@api.multi
+	def force_update(self):
+		for label in self:
+			if label.task_status=="WAITING":
+				raise osv.except_osv(("Warning"),"This label ("+label.real_id+") is already updating. Please wait ...")
+			else:
+				label._update_esl(0)
+		
+	
 	def form_to_matching(self):
 		view_id = self.env['ir.model.data'].get_object('ses_imagotag','label_matching_form')
 		return {
@@ -309,7 +330,7 @@ class Label(models.Model):
 
 		if context.get('active_ids') and len(context.get('active_ids'))!=1:
  			self.template=self.env['ses_imagotag.template'].search(['&','|',('size','like',self.size),('dyn','=',True),('multi','=',True)])[0]
-			self.products=[(6,0,context.get('active_ids'))] 
+			self.products=[(6,0,context.get('active_ids'))]
 		else:
 			self.products=[(6,0,[context.get('active_id')])] 
  			self.template=self.env['ses_imagotag.template'].search(['&','|',('size','like',self.size),('dyn','=',True),('multi','=',False)])[0]
@@ -350,7 +371,7 @@ class Label(models.Model):
             'target': 'current',
             'domain': '[]',
 			'flags': {'initial_mode': 'edit',},
-            }	
+            }
 		
 	@api.one
 	@api.constrains('template', 'len_products')

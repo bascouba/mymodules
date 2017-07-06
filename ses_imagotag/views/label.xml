@@ -31,10 +31,10 @@
 		<form> 
 		  <group>
 			<group>
-			    <field name="is_created" invisible="1"/>
-			    <field name="description"/>
-			    <field name="real_id" attrs="{'readonly': [('is_created', '=', True)]}"/>
-			    <field name="type"/>
+                <field name="is_created" invisible="1"/>
+                <field name="description"/>
+                <field name="real_id" attrs="{'readonly': [('is_created', '=', True)]}"/>
+                <field name="type"/>
                 <field name="status"/>
 			</group>
 			<group>
@@ -119,8 +119,8 @@
         <field name="numbercall">-1</field>
         <field name="doall" eval="False"/>
         <field name="model" eval="'ses_imagotag.label'"/>
-        <field name="function" eval="'_update_esl'"/>
-        <field name="args">()</field>
+        <field name="function" eval="'_update_esls'"/>
+        <field name="args">(1,)</field>
     </record>
     
     <record id="ir_cron_scheduler_update_esl_action_closes" model="ir.cron">
@@ -131,8 +131,8 @@
         <field name="numbercall">-1</field>
         <field name="doall" eval="False"/>
         <field name="model" eval="'ses_imagotag.label'"/>
-        <field name="function" eval="'_update_esl'"/>
-        <field name="args">()</field>
+        <field name="function" eval="'_update_esls'"/>
+        <field name="args">(1,)</field>
     </record>
 
     <record id="ir_cron_scheduler_switch_page_esl_action_open" model="ir.cron">
@@ -211,6 +211,23 @@
         <field name="key2">client_action_multi</field>
         <field name="type">object</field>
         <field name="value" eval="'ir.actions.server,' + str(ref('myaction'))" />
+        <field name="key">action</field>
+        <field name="model">ses_imagotag.label</field>
+    </record>
+    
+    <record model="ir.actions.server" id="ses_imagotag.label_force_update_esl_action">
+        <field name="type">ir.actions.server</field>
+        <field name="name">Update ESL</field>
+        <field name="state">code</field>
+        <field name="model_id" ref="model_ses_imagotag_label"></field>
+        <field name="code">action = object.browse(context.get('active_ids')).force_update()</field>
+    </record>
+    
+    <record model="ir.values" id="ses_imagotag.label_force_update_esl">
+        <field name="name">Update ESL</field>
+        <field name="key2">client_action_multi</field>
+        <field name="type">object</field>
+        <field name="value" eval="'ir.actions.server,' + str(ref('ses_imagotag.label_force_update_esl_action'))" />
         <field name="key">action</field>
         <field name="model">ses_imagotag.label</field>
     </record>
