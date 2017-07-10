@@ -143,6 +143,7 @@ class Label(models.Model):
 		'png',
 		'products',
 		'template',
+		'products.stock_quant_ids',
 		'products.name',
 		'products.list_price',
 		'products.pricelist_item_ids.price',
@@ -211,7 +212,7 @@ class Label(models.Model):
 				xmlbody+="<field key='base_price' value='"+str('%.2f' % float(product.list_price))+"'/>"
 				xmlbody+="<field key='discount_fixed' value='"+str(product.label_discount_fixed)+"'/>"
 			xmlbody+="<field key='image' value='"+(product.image or "")+"'/>"
-			xmlbody+="""<field key='stock' value=" """+str(product.qty_available)+""" "/>"""
+			xmlbody+="""<field key='qty_available' value=" """+str(product.qty_available)+""" "/>"""
 			if product.description:
 				xmlbody+="""<field key='description' value=" """+product.description+""" "/>"""
 			if product.description_sale:
