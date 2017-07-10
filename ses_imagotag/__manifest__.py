@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Label Manager",
+    'name': "Etiquettes Electroniques",
 
     'summary': """
         Manage your labels. Link products to labels. Change templates.""",
