@@ -18,7 +18,7 @@ class LabelConfigSettings(models.TransientModel):
 	website=fields.Char('Website Domain', help="Website domain where the products are sold")
 	
 	pos=fields.Many2one(comodel_name='pos.config', string="Point of Sale", delegate=True)
-	template_gestion=fields.Many2one(comodel_name='ses_imagotag.template', string='Template Inventory', default=False, delegate=True)
+	template_gestion=fields.Many2one(comodel_name='ses_imagotag.template', string='Template Inventory')
 
 	
 

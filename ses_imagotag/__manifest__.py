@@ -6,7 +6,7 @@
         Manage your labels. Link products to labels. Change templates.""",
 
     'description': """
-        Manage your labels. Link your products to labels that will display informations about the products
+        Manage your electronics labels. Link your products to labels that will display informations about the products
     """,
 
     'images': ['images/main_screenshot.png'],
@@ -16,7 +16,7 @@
     'website': "www.ses-imagotag.com",
 
 
-    'category': 'Marketing, Inventory, Point of Sale',
+    'category': 'Marketing, Inventory, Point of Sale, Warehouse, eCommerce, Productivity',
     'version': '0.1',
 
     'depends': ['point_of_sale'],
@@ -27,6 +27,5 @@
         'views/templates.xml',
         'views/matchings.xml',
         'views/product.xml',
-        'data/initial_template.xml',
     ],
 }

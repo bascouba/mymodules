@@ -20,7 +20,6 @@ class Template(models.Model):
 	preview=fields.Binary(help="Preview of the template, is shown after one matching created with this template")
 	
 	label=fields.One2many(comodel_name='ses_imagotag.label', inverse_name='template')
-	config=fields.One2many(comodel_name='ses_imagotag.config.settings', inverse_name='template_gestion')
 	
 	
 	@api.depends('name')

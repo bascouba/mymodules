@@ -179,7 +179,7 @@
                         </group>
                         <group string="Data">
                             <field name="pos" class="oe_inline"/>
-                            <field name="template_gestion" domain="[('dyn','=',True)]" class="oe_inline"/>
+                            <field name="template_gestion" domain="[('dyn','=',True)]" class="oe_inline" required="False"/>
                         </group>
                     </div>
                 </form>

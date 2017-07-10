@@ -181,7 +181,7 @@ class Label(models.Model):
 	def _build_task_body(self, preload):
 		xmlbody=""
 		xmlbody+="<TaskOrder title='Update ESLs from Odoo'>"
-		if (self.env['ses_imagotag.template'].browse(int(re.search(r'\d+', self.env['ir.config_parameter'].get_param('template_gestion')).group()))):
+		if (self.env['ir.config_parameter'].get_param('template_gestion')):
 			xmlbody+=self._xml_content(self.products,self.env['ses_imagotag.template'].browse(int(re.search(r'\d+', self.env['ir.config_parameter'].get_param('template_gestion')).group())),1,1)
 		xmlbody+=self._xml_content(self.products,self.template,0,preload)
 		xmlbody+="</TaskOrder>"
