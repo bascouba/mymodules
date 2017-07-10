@@ -11,7 +11,7 @@ class Product(models.Model):
     _inherit = 'product.product'
     
     matching=fields.Many2many(comodel_name='ses_imagotag.label')
-    label_price=fields.Char(compute='get_pos_price', store=True)
+    label_price=fields.Char(compute='get_pos_price')
     label_discount_percent=fields.Float(digits=(16,2), compute='get_pos_price')
     label_discount_fixed=fields.Float(digits=(16,2), compute='get_pos_price')
     len_matching=fields.Integer(compute="get_len_matching")
