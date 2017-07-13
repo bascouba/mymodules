@@ -88,7 +88,6 @@ class Label(models.Model):
 					location.type="UNKNOWN"
 
 	@api.one
-	@api.depends('task_id')
 	def _get_status_task(self):
 		for location in self:
 			if location.task_id:
@@ -104,7 +103,6 @@ class Label(models.Model):
 							location.task_status="WAITING"
 							
 	@api.multi
-	@api.depends('status', 'task_status')
 	def _check_color(self):
 		for record in self:
 			record.status_color = 1
