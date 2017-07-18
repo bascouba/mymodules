@@ -51,4 +51,7 @@ class LabelConfigSettings(models.TransientModel):
 	def set_default_pos(self):
 		self.env['ir.config_parameter'].set_param('pos', (self.pos.id or ''), groups=['base.group_system'])
 		
+	def actualize_templates(self):
+		self.env['ses_imagotag.template'].actualize_templates()
+		
 		

@@ -171,6 +171,7 @@
                     <header>
                         <button string="Apply" type="object" name="execute" class="oe_highlight"/>
                         <button string="Cancel" type="object" name="cancel" class="oe_link"/>
+                        <button string="Refresh templates" type="object" name="actualize_templates"/>
                     </header>
                     <div>
                         <group string="Network">
