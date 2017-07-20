@@ -143,7 +143,6 @@ class Label(models.Model):
 		'template',
 		'products.stock_quant_ids',
 		'products.name',
-		'products.list_price',
 		'products.pricelist_item_ids.price',
 		'products.pricelist_item_ids.percent_price',
 		'products.pricelist_item_ids.fixed_price',
@@ -159,7 +158,7 @@ class Label(models.Model):
 		self.need_update=True
 		
 	@api.one
-	@api.depends('products','template')
+	@api.depends('products','template','products.list_price')
 	def _update_now(self):
 		self._update_esl(0)
 		
@@ -204,10 +203,18 @@ class Label(models.Model):
 			xmlbody+="""<field key='name' value='"""+product.name+"""'/>"""
 			xmlbody+="<field key='price' value='"+str('%.2f' % float(product.label_price) or '%.2f' % float(product.list_price))+"'/>"
 			if product.label_discount_percent!=0:
-				xmlbody+="<field key='base_price' value='"+str('%.2f' % float(product.list_price))+"'/>"
+				base_price=product.list_price
+				for attribute in product.attribute_value_ids:
+					for price in attribute.price_ids:
+						if price.product_tmpl_id==product.product_tmpl_id:
+							base_price+=price.price_extra
+				xmlbody+="<field key='base_price' value='"+str('%.2f' % base_price)+"'/>"
 				xmlbody+="<field key='discount_percent' value='"+str(product.label_discount_percent)+"'/>"
 			if product.label_discount_fixed!=0:
-				xmlbody+="<field key='base_price' value='"+str('%.2f' % float(product.list_price))+"'/>"
+				base_price=float(product.list_price)
+				for attribute in product.attribute_value_ids:
+					base_price+=attribute.price_extra
+				xmlbody+="<field key='base_price' value='"+str('%.2f' % base_price)+"'/>"
 				xmlbody+="<field key='discount_fixed' value='"+str(product.label_discount_fixed)+"'/>"
 			xmlbody+="<field key='image' value='"+(product.image or "")+"'/>"
 			xmlbody+="""<field key='qty_available' value=" """+str(product.qty_available)+""" "/>"""
@@ -334,7 +341,7 @@ class Label(models.Model):
 			self.products=[(6,0,context.get('active_ids'))]
 		else:
 			self.products=[(6,0,[context.get('active_id')])] 
- 			self.template=self.env['ses_imagotag.template'].search(['&','|',('size','like',self.size),('dyn','=',True),('multi','=',False)])[0]
+ 			self.template=self.env['ses_imagotag.template'].search(['|',('size','like',self.size),('dyn','=',True)])[0]
 		
 		return {
             'name':_("Save a new matching"),
