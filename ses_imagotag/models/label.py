@@ -271,6 +271,11 @@ class Label(models.Model):
 		else:
 			return False
 		
+	@api.multi
+	def register_labels(self):
+		for label in self.search([]):
+			label._register_label(label.real_id)
+			
 	@api.model
 	def create(self, vals):	
 		if len(vals['real_id'])!=8:

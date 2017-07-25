@@ -54,4 +54,7 @@ class LabelConfigSettings(models.TransientModel):
 	def actualize_templates(self):
 		self.env['ses_imagotag.template'].actualize_templates()
 		
+	def register_labels(self):
+		self.env['ses_imagotag.label'].register_labels()
+		
 		
