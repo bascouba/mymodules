@@ -15,7 +15,7 @@ To Configure the module :
 The first thing you have to do is to set the ip address of the imagotag server in configuration menu of the module.
 After having your imagotag server up, you can :
 - Add ESLs (that registers automatically on the imagotag server),
-- Add templates (that has to be registered first on imagotag server),
+- Add templates, by clicking refresh template on Configuration Page (that has to be registered first on imagotag server),
 
 Then, in configuration menu of the module, you will have to : 
 - Link the right Point of Sale where the labels are settled. This link is used to get the correct prices of the products 
