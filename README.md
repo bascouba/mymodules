@@ -45,7 +45,7 @@ Two ways to link your products to your registered labels :
   , click on Action-->Create Matching. You'll then have a list of your labels, just click on new. A first template will be selected 
   but you can still change it.
   
-To test if it's working, run manually the scheduled actions Update ESLs and Switch Pages.
+If you change some attributes that are not the products or the template and you want to refresh the label without waiting the next day, just select the labels you want to update and click on Action->Update ESL.
 
 Send Images to labels
 ---------------------
