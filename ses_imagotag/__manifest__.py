@@ -16,8 +16,8 @@
     'website': "www.ses-imagotag.com",
 
 
-    'category': 'Marketing, Inventory, Point of Sale, Warehouse, eCommerce, Productivity',
-    'version': '1.2',
+    'category': 'Marketing, Inventory, Point of Sale, Warehouse, eCommerce, Productivity, Pricing, Electronic Labels',
+    'version': '1.3',
 
     'depends': ['point_of_sale'],
 
